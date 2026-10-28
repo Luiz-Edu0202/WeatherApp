@@ -30,6 +30,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 
 class LoginActivity : ComponentActivity()
 {
@@ -50,42 +56,69 @@ class LoginActivity : ComponentActivity()
 
 }
 @Composable
-fun LoginPage(modifier: Modifier = Modifier)
-{
+fun LoginPage(modifier: Modifier = Modifier) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     val activity = LocalActivity.current as Activity
-    Column(modifier = modifier.fillMaxWidth(fraction = 0.9f), verticalArrangement = Arrangement.Center,horizontalAlignment = Alignment.CenterHorizontally)
-    {
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 32.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
             text = "Bem-vindo/a!",
-            fontSize = 24.sp
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = modifier.size(12.dp))
+
+        Spacer(modifier = Modifier.height(32.dp))
+
         OutlinedTextField(
             value = email,
             label = { Text(text = "Digite seu e-mail") },
-            modifier = modifier,
-            onValueChange = { email = it }
+            modifier = Modifier.fillMaxWidth(),
+            onValueChange = { email = it },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
         )
-        Spacer(modifier = modifier.size(12.dp))
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         OutlinedTextField(
             value = password,
             label = { Text(text = "Digite sua senha") },
-            modifier = modifier,
+            modifier = Modifier.fillMaxWidth(),
             onValueChange = { password = it },
-            visualTransformation = PasswordVisualTransformation()
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
-        Spacer(modifier = modifier.size(12.dp))
-        Row(modifier = modifier.padding(12.dp).fillMaxWidth())
-        {
-            Button( onClick = { Toast.makeText(activity, "Login OK!", Toast.LENGTH_LONG).show() },
-                enabled = email.isNotEmpty() && password.isNotEmpty())
-            {
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Button(
+                onClick = {
+                    activity.startActivity(
+                        Intent(activity, MainActivity::class.java).setFlags(
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        )
+                    )
+                },
+                enabled = email.isNotEmpty() && password.isNotEmpty()
+            ) {
                 Text("Login")
             }
-            Button(onClick = { email = ""; password = "" } )
-            {
+
+            Button(
+                onClick = {
+                    email = ""; password = ""
+                }
+            ) {
                 Text("Limpar")
             }
         }
