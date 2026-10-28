@@ -34,6 +34,7 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 
@@ -122,6 +123,19 @@ fun LoginPage(modifier: Modifier = Modifier) {
                 Text("Limpar")
             }
         }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TextButton(
+            onClick = {
+                // Cria um Intent para chamar a RegisterActivity
+                activity.startActivity(
+                    Intent(activity, RegisterActivity::class.java)
+                )
+            }
+        ) {
+            Text("Ainda não tem conta? Registre-se aqui")
+        }
+
     }
 }
 
