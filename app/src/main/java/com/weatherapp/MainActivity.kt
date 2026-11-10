@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.weatherapp.ui.HomePage
 import com.weatherapp.ui.theme.WeatherAppTheme
 
 class MainActivity : ComponentActivity()
@@ -49,31 +50,3 @@ class MainActivity : ComponentActivity()
     }
 }
 
-@Composable
-fun HomePage(modifier: Modifier = Modifier) {
-    val activity = LocalActivity.current as Activity
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Bem-vindo!",
-            fontSize = 28.sp
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Button(
-            onClick = {
-                activity.finish()
-            },
-            modifier = Modifier.fillMaxWidth(0.5f)
-        ) {
-            Text(text = "Sair", fontSize = 18.sp)
-        }
-    }
-}
