@@ -47,6 +47,8 @@ import com.weatherapp.ui.nav.BottomNavItem
 import com.weatherapp.ui.nav.MainNavHost
 import com.weatherapp.ui.theme.WeatherAppTheme
 import androidx.activity.viewModels
+import androidx.compose.runtime.remember
+import com.weatherapp.ui.CityDialog
 import com.weatherapp.viewmodel.MainViewModel
 
 class MainActivity : ComponentActivity()
@@ -57,9 +59,16 @@ class MainActivity : ComponentActivity()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent{
+            var showDialog by remember { mutableStateOf(false) }
             val viewModel: MainViewModel by viewModels()
             val navController = rememberNavController()
             WeatherAppTheme {
+                if (showDialog) CityDialog(
+                    onDismiss = { showDialog = false },
+                    onConfirm = { city ->
+                        if (city.isNotBlank()) viewModel.add(city)
+                        showDialog = false
+                    })
                 Scaffold(
                     topBar = {
                         TopAppBar(
@@ -84,7 +93,7 @@ class MainActivity : ComponentActivity()
                         BottomNavBar(navController = navController, items)
                     },
                     floatingActionButton = {
-                        FloatingActionButton(onClick = { }) {
+                        FloatingActionButton(onClick = { showDialog = true }) {
                             Icon(Icons.Default.Add, contentDescription = "Adicionar")
                         }
                     }
@@ -92,7 +101,7 @@ class MainActivity : ComponentActivity()
                     Box(modifier = Modifier.padding(innerPadding)) {
                         MainNavHost(
                             navController = navController,
-                            viewModel = viewModel // <--- Repassando o ViewModel
+                            viewModel = viewModel
                         )
                     }
                 }
