@@ -50,6 +50,7 @@ import com.weatherapp.ui.nav.MainNavHost
 import com.weatherapp.ui.theme.WeatherAppTheme
 import androidx.activity.viewModels
 import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.weatherapp.ui.CityDialog
 import com.weatherapp.ui.nav.Route
 import com.weatherapp.viewmodel.MainViewModel
@@ -57,6 +58,8 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.weatherapp.db.fb.FBDatabase
+import com.weatherapp.viewmodel.MainViewModelFactory
 
 class MainActivity : ComponentActivity()
 {
@@ -66,8 +69,10 @@ class MainActivity : ComponentActivity()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent{
+            val fbDB = remember { FBDatabase() }
+            val viewModel : MainViewModel = viewModel(factory = MainViewModelFactory(fbDB))
+
             var showDialog by remember { mutableStateOf(false) }
-            val viewModel: MainViewModel by viewModels()
             val navController = rememberNavController()
             val currentRoute = navController.currentBackStackEntryAsState()
             val showButton = currentRoute.value?.destination?.hasRoute(Route.List::class) == true
