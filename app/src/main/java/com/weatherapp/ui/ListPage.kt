@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.weatherapp.model.City
 import android.widget.Toast
+import com.weatherapp.model.Weather
 import com.weatherapp.viewmodel.MainViewModel
 
 @Composable
@@ -41,8 +42,7 @@ fun ListPage(
             .padding(8.dp)
     ) {
         items(cityList, key = { it.name }) { city ->
-            CityItem(
-                city = city,
+            CityItem(city = city, weather = viewModel.weather(city.name),
                 onClose = {
                     viewModel.remove(city)
                     Toast.makeText(activity, "Fechar: ${city.name}", Toast.LENGTH_SHORT).show()
@@ -58,10 +58,12 @@ fun ListPage(
 @Composable
 fun CityItem(
     city: City,
+    weather: Weather,
     onClick: () -> Unit,
     onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val desc = if (weather == Weather.LOADING) "Carregando clima..." else weather.desc
     Row(
         modifier = modifier.fillMaxWidth().padding(8.dp).clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
@@ -76,7 +78,7 @@ fun CityItem(
                 text = city.name,
                 fontSize = 24.sp)
             Text(modifier = Modifier,
-                text = city.weather?:"Carregando clima...",
+                text = desc,
                 fontSize = 16.sp)
         }
         IconButton(onClick = onClose) {

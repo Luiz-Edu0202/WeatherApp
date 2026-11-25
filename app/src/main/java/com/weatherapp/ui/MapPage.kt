@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,6 +28,7 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.weatherapp.model.Weather
 import com.weatherapp.viewmodel.MainViewModel
 
 @Composable
@@ -58,10 +60,16 @@ fun MapPage(
     ) {
 
         viewModel.cities.forEach {
-            if (it.location != null) {
-                val markerState = remember { MarkerState(position = it.location) }
-                Marker(state = markerState, title = it.name, snippet = "${it.location}")
+            key(it.name) {
+                if (it.location != null) {
+                    val weather = viewModel.weather(it.name)
+                    val desc = if (weather == Weather.LOADING) "Carregando clima..."
+                    else weather.desc
+                    val marker = remember { MarkerState(position = it.location) }
+                    Marker(state = marker, title = it.name, snippet = desc)
+                }
             }
+
         }
 
         Marker(
