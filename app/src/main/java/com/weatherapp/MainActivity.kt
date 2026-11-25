@@ -60,6 +60,8 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.weatherapp.api.WeatherService
 import com.weatherapp.db.fb.FBDatabase
+import com.weatherapp.ui.CityDialogViewModel
+import com.weatherapp.ui.CityDialogViewModelFactory
 import com.weatherapp.viewmodel.MainViewModelFactory
 
 class MainActivity : ComponentActivity()
@@ -76,6 +78,10 @@ class MainActivity : ComponentActivity()
                 factory = MainViewModelFactory(fbDB, weatherService)
             )
 
+            val cityDialogViewModel: CityDialogViewModel = viewModel(
+                factory = CityDialogViewModelFactory(weatherService)
+            )
+
             var showDialog by remember { mutableStateOf(false) }
             val navController = rememberNavController()
             val currentRoute = navController.currentBackStackEntryAsState()
@@ -87,7 +93,8 @@ class MainActivity : ComponentActivity()
                     onConfirm = { city ->
                         if (city.isNotBlank()) viewModel.addCity(city)
                         showDialog = false
-                    })
+                    },
+                    viewModel = cityDialogViewModel)
                 Scaffold(
                     topBar = {
                         TopAppBar(
@@ -117,7 +124,12 @@ class MainActivity : ComponentActivity()
                     },
                     floatingActionButton = {
                         if (showButton) {
-                            FloatingActionButton(onClick = { showDialog = true }) {
+                            FloatingActionButton(
+                                onClick = {
+                                    cityDialogViewModel.query = ""
+                                    showDialog = true
+                                }
+                            ) {
                                 Icon(Icons.Default.Add, contentDescription = "Adicionar")
                             }
                         }
